@@ -1,4 +1,8 @@
 import discord
+import requests
+import json
+
+LUNAR_CRUSH_API_KEY = "LUNAR_API_KEY"
 
 client = discord.Client()
 
@@ -9,19 +13,34 @@ async def on_ready():
 @client.event
 async def on_message(message):
     msg_str = message.content
-    print(msg_str)
-    pass
 
-client.run("") # pass the bot token here
+    # Help command
+    if msg_str == '!help':
+        await message.channel.send("!help - Displays this help message")
 
-"""
-from discord.ext import commands
+    # Resources command
+    if msg_str == "!resources":
+        await message.channel.send("Some resources for you here!")
 
-bot = commands.Bot(command_prefix='>')
+    # Crypto command
+    if msg_str == "!crypto":
+        symbols = ["BTC", "ETH", "LTC"]
 
-@bot.command()
-async def ping(ctx):
-    await ctx.send('pong')
+        # make the call for prices
+        http_response = requests.get("https://api.lunarcrush.com/v2?data=assets&key=" + LUNAR_CRUSH_API_KEY + "&symbol=" + ",".join(symbols))
+        data = json.loads(http_response.text)
 
-bot.run('token')
-"""
+        # extract prices
+        prices = []
+        prices.append(int(data["data"][0]["price"])) # BTC
+        prices.append(int(data["data"][1]["price"])) # ETH
+        prices.append(int(data["data"][2]["price"])) # LTC
+
+        # derive message response
+        msg_response = "Cryptocurrency prices for today!\n"
+        for i in range(len(symbols)):
+            msg_response += "**{}** - ${}\n".format(symbols[i], prices[i])
+
+        await message.channel.send(msg_response)
+
+client.run("DISCORD_TOKEN") # pass the bot token here
