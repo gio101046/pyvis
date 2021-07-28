@@ -2,6 +2,13 @@ import discord
 import requests
 import json
 import os
+from dotenv import load_dotenv
+
+# load environment variables
+load_dotenv()
+DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+DISCORD_GUILD = os.getenv('DISCORD_GUILD')
+LUNAR_CRUSH_API_KEY = os.getenv('LUNAR_CRUSH_API_KEY')
 
 client = discord.Client()
 
@@ -22,11 +29,11 @@ async def on_message(message):
         await message.channel.send("Some resources for you here!")
 
     # Crypto command
-    if msg_str == "!crypto":
+    if msg_str.startswith("!crypto"):
         symbols = ["BTC", "ETH", "LTC"]
 
         # make the call for prices
-        http_response = requests.get("https://api.lunarcrush.com/v2?data=assets&key=" + os.getenv("LUNAR_CRUSH_API_KEY") + "&symbol=" + ",".join(symbols))
+        http_response = requests.get("https://api.lunarcrush.com/v2?data=assets&key=" + LUNAR_CRUSH_API_KEY + "&symbol=" + ",".join(symbols))
         data = json.loads(http_response.text)
 
         # extract prices
@@ -42,4 +49,4 @@ async def on_message(message):
 
         await message.channel.send(msg_response)
 
-client.run(os.getenv("DISCORD_BOT_TOKEN")) # pass the bot token here
+client.run(DISCORD_BOT_TOKEN)
