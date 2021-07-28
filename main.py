@@ -1,8 +1,7 @@
 import discord
 import requests
 import json
-
-LUNAR_CRUSH_API_KEY = "LUNAR_API_KEY"
+import os
 
 client = discord.Client()
 
@@ -27,7 +26,7 @@ async def on_message(message):
         symbols = ["BTC", "ETH", "LTC"]
 
         # make the call for prices
-        http_response = requests.get("https://api.lunarcrush.com/v2?data=assets&key=" + LUNAR_CRUSH_API_KEY + "&symbol=" + ",".join(symbols))
+        http_response = requests.get("https://api.lunarcrush.com/v2?data=assets&key=" + os.getenv("LUNAR_CRUSH_API_KEY") + "&symbol=" + ",".join(symbols))
         data = json.loads(http_response.text)
 
         # extract prices
@@ -43,4 +42,4 @@ async def on_message(message):
 
         await message.channel.send(msg_response)
 
-client.run("DISCORD_TOKEN") # pass the bot token here
+client.run(os.getenv("DISCORD_BOT_TOKEN")) # pass the bot token here
