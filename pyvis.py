@@ -2,22 +2,32 @@ import discord
 import requests
 import json
 import os
+from discord.ext import commands
 from dotenv import load_dotenv
 
 # load environment variables
 load_dotenv()
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
-DISCORD_GUILD = os.getenv('DISCORD_GUILD')
+DISCORD_GUILD_NAME = os.getenv('DISCORD_GUILD_NAME')
 LUNAR_CRUSH_API_KEY = os.getenv('LUNAR_CRUSH_API_KEY')
 
-client = discord.Client()
+bot = commands.Bot(command_prefix='!')
 
-@client.event
+@bot.event
 async def on_ready():
-    pass
+    guild = discord.utils.find(lambda g: g.name == DISCORD_GUILD_NAME, bot.guilds)
+    if guild:
+        print(
+            f'{bot.user} is connected to the following guild:\n',
+            f'{guild.name}(id: {guild.id})'
+        )   
 
-@client.event
+@bot.event
 async def on_message(message):
+    # ignore messages from the bot itself
+    if message.author == bot.user:
+        return
+
     msg_str = message.content
 
     # Help command
@@ -49,4 +59,4 @@ async def on_message(message):
 
         await message.channel.send(msg_response)
 
-client.run(DISCORD_BOT_TOKEN)
+bot.run(DISCORD_BOT_TOKEN)
