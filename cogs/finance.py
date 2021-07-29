@@ -7,11 +7,13 @@ LUNAR_CRUSH_API_KEY = os.getenv('LUNAR_CRUSH_API_KEY')
 ALPHAVANTAGE_API_KEY = os.getenv('ALPHAVANTAGE_API_KEY')
 
 class Finance(commands.Cog):
-    """Commands to query stock and crypto prices"""
+    """Commands to query stock and crypto prices."""
 
-    @commands.command()
+    @commands.command(usage="[tickers]")
     async def stock(ctx, *tickers):
-        """!stock [tickers] - example usage '!stock TSLA GOOG'"""
+        """
+            Get prices for the given stock tickers. Will default tickers to AAPL, GOOG, MSFT and AMZN if none provided.
+        """
 
         if len(tickers) == 0:
             tickers = ["AAPL", "GOOG", "MSFT", "AMZN"]
@@ -41,9 +43,11 @@ class Finance(commands.Cog):
 
         await ctx.send(msg_response) 
 
-    @commands.command()
+    @commands.command(usage="[tickers]")
     async def crypto(ctx, *tickers):
-        """!crypto [tickers] - example usage '!crypto BTC LTC'"""
+        """
+            Get prices for the given crypto tickers. Will default tickers to BTC, ETH and LTC if none provided.
+        """
 
         # default tickers
         if len(tickers) == 0:
