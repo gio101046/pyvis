@@ -11,8 +11,9 @@ load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 DISCORD_GUILD_NAME = os.getenv('DISCORD_GUILD_NAME')
+PREFIX = "!"
 
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix=PREFIX)
 
 @bot.event
 async def on_ready():
@@ -26,6 +27,19 @@ async def on_ready():
 @bot.event 
 async def on_member_join(member):
     pass # TODO
+
+@bot.event
+async def on_message(message):
+    # avoid bot self trigger
+    if message.author == bot.user:
+        return
+
+    # repsond with command prefix
+    if bot.user.mentioned_in(message) and not message.mention_everyone:
+        await message.channel.send(f"**My prefix in this server is:** `{PREFIX}`")
+
+    # allow cogs to handle messages too
+    await bot.process_commands(message)
 
 # override default help command
 menu = DefaultMenu('◀️', '▶️', '❌')
