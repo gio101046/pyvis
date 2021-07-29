@@ -2,7 +2,6 @@ import random
 import discord
 import requests
 import json
-import os
 import requests
 from discord.ext import commands
 
@@ -43,23 +42,3 @@ class Fun(commands.Cog):
         github_embed.set_footer(text=f"Repo created at • {repo_info['created_at'].split('T')[0]}")
 
         await ctx.send(embed=github_embed)
-
-    """
-    @commands.command(usage="<member>")
-    async def welcome(self, ctx, member: str = "") -> None:
-        if len(member.strip()) == 0:
-            await ctx.send("**Please provide a member mention. ex.** `!welcome @gcode`")
-            return
-
-        GIPHY_API_KEY = os.getenv("GIPHY_API_KEY")
-        
-        http_response = requests.get(f"https://api.giphy.com/v1/gifs/search?api_key={GIPHY_API_KEY}&q=welcome&limit=25&offset=0&rating=pg-13&lang=en")
-        welcome_gifs = json.loads(http_response.text)
-        welcome_gif = random.choice(welcome_gifs["data"])
-
-        gif_embed = discord.Embed()
-        gif_embed.set_image(url=welcome_gif["images"]["original"]["url"])
-
-        await ctx.send(embed=gif_embed)
-        await ctx.send(f"{member} **Welcome to {ctx.guild.name}!** :wave:")
-    """

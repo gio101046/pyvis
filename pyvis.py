@@ -33,8 +33,8 @@ async def on_ready():
 
 @bot.event 
 async def on_member_join(member):
-    guild = discord.utils.find(lambda g: g.name == DISCORD_GUILD_NAME, bot.guilds)
-    welcome_channel = discord.utils.find(lambda c: c.name == "👋welcome", guild.channels)
+    guild = discord.utils.find(lambda g: g.name == DISCORD_GUILD_NAME, bot.guilds) # TODO: check if find will throw an error
+    welcome_channel = discord.utils.find(lambda c: c.name == "👋welcome", guild.channels) # TODO: remove welcome channel hardcod
 
     http_response = requests.get(f"https://api.giphy.com/v1/gifs/search?api_key={GIPHY_API_KEY}&q=welcome&limit=25&offset=0&rating=pg-13&lang=en")
     welcome_gifs = json.loads(http_response.text)
