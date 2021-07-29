@@ -3,17 +3,15 @@ import requests
 import json
 from discord.ext import commands
 
-LUNAR_CRUSH_API_KEY = os.getenv('LUNAR_CRUSH_API_KEY')
-ALPHAVANTAGE_API_KEY = os.getenv('ALPHAVANTAGE_API_KEY')
-
 class Finance(commands.Cog):
     """Commands to query stock and crypto prices."""
 
     @commands.command(usage="[tickers]")
-    async def stock(ctx, *tickers):
+    async def stock(self, ctx, *tickers):
         """
             Get prices for the given stock tickers. Will default tickers to AAPL, GOOG, MSFT and AMZN if none provided.
         """
+        ALPHAVANTAGE_API_KEY = os.getenv('ALPHAVANTAGE_API_KEY')
 
         if len(tickers) == 0:
             tickers = ["AAPL", "GOOG", "MSFT", "AMZN"]
@@ -44,10 +42,11 @@ class Finance(commands.Cog):
         await ctx.send(msg_response) 
 
     @commands.command(usage="[tickers]")
-    async def crypto(ctx, *tickers):
+    async def crypto(self, ctx, *tickers):
         """
             Get prices for the given crypto tickers. Will default tickers to BTC, ETH and LTC if none provided.
         """
+        LUNAR_CRUSH_API_KEY = os.getenv('LUNAR_CRUSH_API_KEY')
 
         # default tickers
         if len(tickers) == 0:
