@@ -1,7 +1,8 @@
 import discord
 import os
-from cogs.finance import Finance
 from cogs.python import Python
+from cogs.fun import Fun
+from cogs.finance import Finance
 from discord.ext import commands
 from dotenv import load_dotenv
 from pretty_help import DefaultMenu, PrettyHelp
@@ -26,7 +27,7 @@ async def on_ready():
 
 @bot.event 
 async def on_member_join(member):
-    pass # TODO
+    pass # TODO send new member welcome message on join
 
 @bot.event
 async def on_message(message):
@@ -47,6 +48,7 @@ bot.help_command = PrettyHelp(navigation=menu, color=discord.Colour.green())
 
 # commands by category a.k.a. cogs
 bot.add_cog(Python())
+bot.add_cog(Fun())
 bot.add_cog(Finance())
 
 # start up bot
