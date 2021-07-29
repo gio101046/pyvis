@@ -37,7 +37,7 @@ async def on_message(message):
 
     # repsond with command prefix
     if bot.user.mentioned_in(message) and not message.mention_everyone:
-        await message.channel.send(f"**My prefix in this server is:** `{PREFIX}`")
+        await message.channel.send(f"**Learn more about me by running:** `{PREFIX}help`")
 
     # allow cogs to handle messages too
     await bot.process_commands(message)
