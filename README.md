@@ -1,11 +1,11 @@
-<h1 align="center">
-  <img width="100" height="100" src="">
+<p align="center">
+  <img width="100" height="100" src="https://github.com/gio101046/pyvis/blob/main/readme/python.png?raw=true">
   <br>
-</h1>
+</p>
 
 <h4 align="center">A full featured discord bot using python's <a href="https://pypi.org/project/discord.py/" target="_blank">discord.py</a> library.</h4>
 
-<h1 align="center" style="margin: -2px">
+<h1 align="center" style="margin: -5px">
   <a target="_blank" href="https://lgtm.com/projects/g/gio101046/pyvis/alerts/">
     <img src="https://img.shields.io/lgtm/alerts/g/gio101046/pyvis.svg?logo=lgtm&logoWidth=18" alt="looks good to me alerts badge">
   </a>
