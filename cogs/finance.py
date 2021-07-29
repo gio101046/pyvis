@@ -17,7 +17,7 @@ class Finance(commands.Cog):
             tickers = ["AAPL", "GOOG", "MSFT", "AMZN"]
 
         # msg response setup
-        msg_response = "Stock prices for today!\n"
+        msg_response = ""
         stock_found = False
 
         # make the call for stock prices
@@ -57,7 +57,7 @@ class Finance(commands.Cog):
         data = json.loads(http_response.text)
 
         # extract prices and derive message response
-        msg_response = "Cryptocurrency prices for today!\n"
+        msg_response = ""
         msg_response += "\n".join([f"**{item['symbol']}**: ${round(float(item['price']), 2)}" for item in data["data"]])
 
         await ctx.send(msg_response)
