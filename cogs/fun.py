@@ -1,15 +1,20 @@
+from os import name
 import random
 import discord
+from discord.ext.commands.core import command
 import requests
 import json
 import requests
+from data import poll_cache
 from datetime import date
 from discord.ext import commands
 
-OPTION_EMOJIS = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
-
 class Fun(commands.Cog):
     """Commands that are good for the soul!"""
+
+    OPTION_EMOJIS = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
+    FULL_CHAR = "█"
+    BAR_LENGTH = 20
 
     @commands.command()
     async def flip(self, ctx) -> None:
@@ -46,8 +51,14 @@ class Fun(commands.Cog):
 
         await ctx.send(embed=github_embed)
 
-    @commands.command(usage="\"<question>\" <options>")
-    async def poll(self, ctx, *params: str) -> None:
+    @commands.group(invoke_without_command=True)
+    async def poll(self, ctx) -> None:
+        """Allows for creating polls and querying results."""
+        await ctx.send("**poll create ->**  `!poll create \"My question?\" option1 option2`")
+        await ctx.send("**poll results ->** `!poll results 870733802190807050`")
+
+    @poll.command(usage="\"<question>\" <options>", name="create")
+    async def poll_create(self, ctx, *params: str) -> None:
         """Creates a poll with the given parameters."""
 
         if len(params) <= 1:
@@ -60,9 +71,51 @@ class Fun(commands.Cog):
         # create embed response
         poll_embed = discord.Embed(title=question, description="\u200b", color=0x3DCCDD)
         for i in range(len(options)):
-            poll_embed.add_field(value="\u200b", name=f"{OPTION_EMOJIS[i]} {options[i]}", inline=False)
+            poll_embed.add_field(value="\u200b", name=f"{self.OPTION_EMOJIS[i]} {options[i]}", inline=False)
         poll_embed.set_footer(text=f"Poll created on • {date.today().strftime('%m/%d/%y')}")
 
         message = await ctx.send(embed=poll_embed)
+
+        # add poll to cache
+        poll_cache[message.id] = {}
         for i in range(len(options)):
-            await message.add_reaction(OPTION_EMOJIS[i])
+            poll_cache[message.id][f"{self.OPTION_EMOJIS[i]}"] = []
+        poll_cache[message.id]["question"] = question
+        poll_cache[message.id]["options"] = ",".join(options)
+
+        # add option emojis to poll
+        for i in range(len(options)):
+            await message.add_reaction(self.OPTION_EMOJIS[i])
+
+    @poll.command(usage="<message_id>", name="results")
+    async def poll_results(self, ctx, message_id: int = None) -> None:
+        """Shows results of a poll given a message id."""
+        
+        if not message_id:
+            await ctx.send("**Please provide the message id of a poll. ex.** `!poll results 870733802190807050")
+            return
+
+        if message_id not in poll_cache:
+            await ctx.send("**Could not find poll with that message id.**")
+            return
+
+        poll = poll_cache[message_id]
+        question = poll["question"]
+        options = poll["options"].split(",")
+
+        total_votes = sum([0 if item[0] == "question" or item[0] == "options" else len(item[1]) for item in poll.items()])
+        option_percentages = []
+        for i in range(len(options)):
+            option_votes = len(poll[self.OPTION_EMOJIS[i]])
+            option_percentages.append(0 if total_votes == 0 else option_votes / total_votes)
+
+        # construct embed response
+        results_embed = discord.Embed(title=question, description="🥁", color=0x3DCCDD)
+        for i in range(len(options)):
+            str_bar = "".join([self.FULL_CHAR for _ in range(int(self.BAR_LENGTH * option_percentages[i]))])
+            str_percent = f"{option_percentages[i] * 100:.2f}%"
+            str_votes = f"({int(option_percentages[i] * total_votes)} votes)"
+            results_embed.add_field(name=f"{self.OPTION_EMOJIS[i]} {options[i]}", value=f"{str_bar} {str_percent} {str_votes}", inline=False)
+        results_embed.set_footer(text=f"Poll queried on • {date.today().strftime('%m/%d/%y')}")
+
+        await ctx.send(embed=results_embed)

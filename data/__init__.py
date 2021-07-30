@@ -1,1 +1,1 @@
-DUMMY_CACHE = {}
+poll_cache = {} # TODO: use a real cache
