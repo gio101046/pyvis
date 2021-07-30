@@ -1,1 +1,1 @@
-poll_cache = {} # TODO: use a real cache
+from data.redis import polls

@@ -1,19 +1,17 @@
+# load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 import discord
 import os
-from discord.flags import MessageFlags
 import requests
 import json
 import random
 from cogs import Programming
 from cogs import Fun
 from cogs import Finance
-from data import poll_cache
 from discord.ext import commands
-from dotenv import load_dotenv
 from pretty_help import DefaultMenu, PrettyHelp
-
-# load environment variables from .env file
-load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 DISCORD_GUILD_NAME = os.getenv('DISCORD_GUILD_NAME')
@@ -36,7 +34,7 @@ async def on_ready():
 
 @bot.event 
 async def on_member_join(member):
-    """ WELCOME START """
+    """ WELCOME START """ # TODO: extract to a separate file
     guild = discord.utils.find(lambda g: g.name == DISCORD_GUILD_NAME, bot.guilds) # TODO: check if find will throw an error
     welcome_channel = discord.utils.find(lambda c: c.name == "👋welcome", guild.channels) # TODO: remove welcome channel hardcode
 
@@ -57,7 +55,7 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    # TODO: is channel is a proposal channel check for poll command
+    # TODO: if channel is a proposal channel check for poll command
 
     # repsond with command prefix
     if bot.user.mentioned_in(message) and not message.mention_everyone:
@@ -71,32 +69,14 @@ async def on_raw_reaction_add(event):
     # avoid bot self trigger
     if event.user_id == bot.user.id:
         return
-
-    """ POLL START """
-    # check if message is in cache and if reaction is valid
-    if event.message_id in poll_cache and event.emoji.name in Fun.OPTION_EMOJIS:
-        # if user has not voted yet, add their vote
-        if event.user_id not in poll_cache[event.message_id][event.emoji.name]:
-            poll_cache[event.message_id][event.emoji.name].append(event.user_id)
-    """ POLL END """
-
-    print(poll_cache)
+    Fun.poll_vote(event)
 
 @bot.event
 async def on_raw_reaction_remove(event):
     # avoid bot self trigger
     if event.user_id == bot.user.id:
         return
-
-    """ POLL START """
-    # check if message is in cache and if reaction is valid
-    if event.message_id in poll_cache and event.emoji.name in Fun.OPTION_EMOJIS:
-        # if user has voted, remove their vote
-        if event.user_id in poll_cache[event.message_id][event.emoji.name]:
-            poll_cache[event.message_id][event.emoji.name].remove(event.user_id)
-    """ POLL END """
-
-    print(poll_cache)
+    Fun.poll_vote(event)
 
 # override default help command
 menu = DefaultMenu('◀️', '▶️', '❌')
