@@ -3,9 +3,9 @@ import os
 import requests
 import json
 import random
-from cogs.python import Python
-from cogs.fun import Fun
-from cogs.finance import Finance
+from cogs import Programming
+from cogs import Fun
+from cogs import Finance
 from discord.ext import commands
 from dotenv import load_dotenv
 from pretty_help import DefaultMenu, PrettyHelp
@@ -34,7 +34,7 @@ async def on_ready():
 @bot.event 
 async def on_member_join(member):
     guild = discord.utils.find(lambda g: g.name == DISCORD_GUILD_NAME, bot.guilds) # TODO: check if find will throw an error
-    welcome_channel = discord.utils.find(lambda c: c.name == "👋welcome", guild.channels) # TODO: remove welcome channel hardcod
+    welcome_channel = discord.utils.find(lambda c: c.name == "👋welcome", guild.channels) # TODO: remove welcome channel hardcode
 
     http_response = requests.get(f"https://api.giphy.com/v1/gifs/search?api_key={GIPHY_API_KEY}&q=welcome&limit=25&offset=0&rating=pg-13&lang=en")
     welcome_gifs = json.loads(http_response.text)
@@ -64,7 +64,7 @@ menu = DefaultMenu('◀️', '▶️', '❌')
 bot.help_command = PrettyHelp(navigation=menu, color=discord.Colour.green()) 
 
 # commands by category a.k.a. cogs
-bot.add_cog(Python())
+bot.add_cog(Programming())
 bot.add_cog(Fun())
 bot.add_cog(Finance())
 

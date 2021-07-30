@@ -3,7 +3,10 @@ import discord
 import requests
 import json
 import requests
+from datetime import date
 from discord.ext import commands
+
+OPTION_EMOJIS = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
 
 class Fun(commands.Cog):
     """Commands that are good for the soul!"""
@@ -42,3 +45,24 @@ class Fun(commands.Cog):
         github_embed.set_footer(text=f"Repo created at • {repo_info['created_at'].split('T')[0]}")
 
         await ctx.send(embed=github_embed)
+
+    @commands.command(usage="\"<question>\" <options>")
+    async def poll(self, ctx, *params: str) -> None:
+        """Creates a poll with the given parameters."""
+
+        if len(params) <= 1:
+            await ctx.send("**Please provide the parameters for the poll. ex.** `!poll \"My question?\" option1 option2`")
+            return
+
+        question = params[0]
+        options = params[1:]
+
+        # create embed response
+        poll_embed = discord.Embed(title=question, description="\u200b", color=0x3DCCDD)
+        for i in range(len(options)):
+            poll_embed.add_field(value="\u200b", name=f"{OPTION_EMOJIS[i]} {options[i]}", inline=False)
+        poll_embed.set_footer(text=f"Poll created on • {date.today().strftime('%m/%d/%y')}")
+
+        message = await ctx.send(embed=poll_embed)
+        for i in range(len(options)):
+            await message.add_reaction(OPTION_EMOJIS[i])
