@@ -55,7 +55,10 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    # TODO: if channel is a proposal channel check for poll command
+    # if channel is proposals and message is not a poll command then delete
+    if message.channel.name == "📝proposals" and not message.content.startswith("!poll create") and not message.content.startswith("!poll results"):
+        await message.delete()
+        return
 
     # repsond with command prefix
     if bot.user.mentioned_in(message) and not message.mention_everyone:

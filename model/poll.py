@@ -32,8 +32,6 @@ class Poll:
         # only add vote if user has not already voted
         if user_id not in self.votes[option]:
             self.votes[option].append(user_id)
-        
-        print(self.votes) # TODO: remove
 
     def remove_vote(self, user_id: str, emoji: str) -> None:
         option = self._get_option(emoji)
@@ -41,8 +39,6 @@ class Poll:
         # only remove if user has voted
         if user_id in self.votes[option]:
             self.votes[option].remove(user_id)
-        
-        print(self.votes) # TODO: remove
 
     def get_emoji(self, option: str) -> str:
         return Poll.OPTION_EMOJIS[self.options.index(option)]

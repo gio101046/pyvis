@@ -115,8 +115,6 @@ class Fun(commands.Cog):
             # get poll from cache
             poll = Poll.create_from(json.loads(polls[event.message_id]))
 
-            print(event)
-
             # check reaction emoji type
             if event.event_type == "REACTION_ADD":
                 poll.add_vote(event.user_id, event.emoji.name)
