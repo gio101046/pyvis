@@ -2,7 +2,6 @@ import random
 import discord
 import requests
 import json
-import requests
 from model import Poll
 from data import polls
 from datetime import date
